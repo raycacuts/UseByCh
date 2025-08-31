@@ -1,0 +1,105 @@
+// android/app/build.gradle
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+
+react {
+  // Autolink RN native modules
+  autolinkLibrariesWithApp()
+}
+
+// ---- Build flags
+def enableProguardInReleaseBuilds = false
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+// Hermes flag (fallback to true if not defined in gradle.properties)
+def hermesEnabled = (project.findProperty('hermesEnabled') ?: 'true').toBoolean()
+
+android {
+  ndkVersion rootProject.ext.ndkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdk rootProject.ext.compileSdkVersion
+
+  namespace "com.useby"
+
+  defaultConfig {
+    applicationId "com.useby"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
+
+    // For react-native-iap (select Google Play variant)
+    missingDimensionStrategy 'store', 'play'
+  }
+
+  signingConfigs {
+    debug {
+      storeFile file('debug.keystore')
+      storePassword 'android'
+      keyAlias 'androiddebugkey'
+      keyPassword 'android'
+    }
+  }
+
+  buildTypes {
+    debug {
+      signingConfig signingConfigs.debug
+    }
+    release {
+      // TODO: replace with your real release keystore
+      signingConfig signingConfigs.debug
+      minifyEnabled enableProguardInReleaseBuilds
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+  }
+
+  // Java/Kotlin toolchain
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+  kotlinOptions {
+    jvmTarget = '17'
+  }
+
+  // Avoid duplicate META-INF entries from libs
+  packagingOptions {
+    resources {
+      excludes += ["META-INF/**"]
+    }
+  }
+}
+
+dependencies {
+  // Version is managed by the RN Gradle plugin
+  implementation("com.facebook.react:react-android")
+
+  if (hermesEnabled) {
+    implementation("com.facebook.react:hermes-android")
+  } else {
+    implementation jscFlavor
+  }
+}
+
+/**
+ * ----- react-native-vector-icons fonts -----
+ * This ensures Ionicons (and any others you list) get bundled into the APK.
+ * Add any additional font families you actually use to iconFontNames.
+ */
+project.ext.vectoricons = [
+  iconFontNames: [
+    'Ionicons.ttf'
+    // Add more if you use them:
+    // 'MaterialIcons.ttf',
+    // 'MaterialCommunityIcons.ttf',
+    // 'FontAwesome.ttf',
+    // 'Feather.ttf',
+    // 'AntDesign.ttf',
+    // 'Octicons.ttf',
+    // 'SimpleLineIcons.ttf',
+    // 'Foundation.ttf',
+    // 'Zocial.ttf',
+  ]
+]
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

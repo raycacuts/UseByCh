@@ -1,0 +1,14 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/ruizhang/Library/Developer/Xcode/DerivedData/UseBy-bgrzdhaztvlsibhkyopjsvyddjwm/Build/Intermediates.noindex/ArchiveIntermediates/UseBy/InstallationBuildProductsLocation/Applications/UseBy.app/UseBy'
+relocations:
+  - { offset: 0x5A237, size: 0x8, addend: 0x0, symName: _UseByVersionString, symObjAddr: 0x0, symBinAddr: 0x1004D2780, symSize: 0x0 }
+  - { offset: 0x5A26C, size: 0x8, addend: 0x0, symName: _UseByVersionNumber, symObjAddr: 0x28, symBinAddr: 0x1004D27A8, symSize: 0x0 }
+  - { offset: 0x5A2A9, size: 0x8, addend: 0x0, symName: '-[AppDelegate application:didFinishLaunchingWithOptions:]', symObjAddr: 0x0, symBinAddr: 0x100004000, symSize: 0x1B4 }
+  - { offset: 0x5BF56, size: 0x8, addend: 0x0, symName: '-[AppDelegate application:didFinishLaunchingWithOptions:]', symObjAddr: 0x0, symBinAddr: 0x100004000, symSize: 0x1B4 }
+  - { offset: 0x5BFD9, size: 0x8, addend: 0x0, symName: '-[AppDelegate window]', symObjAddr: 0x1B4, symBinAddr: 0x1000041B4, symSize: 0x10 }
+  - { offset: 0x5C010, size: 0x8, addend: 0x0, symName: '-[AppDelegate setWindow:]', symObjAddr: 0x1C4, symBinAddr: 0x1000041C4, symSize: 0x14 }
+  - { offset: 0x5C051, size: 0x8, addend: 0x0, symName: '-[AppDelegate .cxx_destruct]', symObjAddr: 0x1D8, symBinAddr: 0x1000041D8, symSize: 0x14 }
+  - { offset: 0x5C649, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000041EC, symSize: 0x70 }
+  - { offset: 0x5C657, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000041EC, symSize: 0x70 }
+...

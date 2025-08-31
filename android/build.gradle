@@ -1,0 +1,48 @@
+// android/build.gradle
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
+
+        kotlinVersion = "1.9.24"
+        androidGradlePluginVersion = "8.6.0"
+
+        // 🔧 Pin coroutines used anywhere in the tree (some transitive deps still bring 1.5.x)
+        coroutinesVersion = "1.7.3"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:${androidGradlePluginVersion}")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    configurations.all {
+        resolutionStrategy {
+            // ✅ Keep Kotlin toolchain consistent
+            force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+            force "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+            // ✅ Force coroutines to 1.7.3 (your log shows 1.5.0 sneaking in)
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$coroutinesVersion"
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+        }
+    }
+}

@@ -1,0 +1,57 @@
+platform :ios, '16.0'
+
+# Make sure CocoaPods can find Node (useful if you use nvm)
+ENV['NODE_BINARY'] = `which node`.strip
+
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+# RN 0.75+ helper
+prepare_react_native_project!
+
+target 'UseByCh' do
+  # Use static frameworks to avoid Firebase module visibility/linking issues
+  use_frameworks! :linkage => :static
+
+  # Autolink native modules (this will pull in react-native-firebase pods)
+  config = use_native_modules!
+
+  use_react_native!(
+    :path => '../node_modules/react-native',
+    :hermes_enabled => false,   # set true if you prefer Hermes
+    :fabric_enabled => true,
+    :new_arch_enabled => false,
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  # ⛔️ Do NOT manually add Firebase pods here.
+  # react-native-firebase will declare the correct Firebase pods automatically.
+
+  target 'UseByChTests' do
+    inherit! :complete
+  end
+end
+
+post_install do |installer|
+  # React Native post install (RN 0.75+)
+  react_native_post_install(installer)
+
+  # Hygiene + ensure modules enabled everywhere
+  installer.pods_project.targets.each do |t|
+    t.build_configurations.each do |cfg|
+      cfg.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+      cfg.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
+
+      if cfg.name == 'Debug'
+        cfg.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
+      end
+
+      if cfg.name == 'Release'
+        cfg.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
+        cfg.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'YES'
+        cfg.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
+        cfg.build_settings['COPY_PHASE_STRIP'] = 'YES'
+      end
+    end
+  end
+end
